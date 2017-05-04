@@ -1,7 +1,11 @@
 # NodeJS
-## Type this for helps and usages of NodeJS files. 
+## What are those things ?
+NodeJS files using Caporal for help generation, colored output, verbosity control, custom logger, coercion and casting, typos suggestions, and auto-complete for bash/zsh/fish,etc...
+
+## Help
+Type this
 ```
-node javascript-file-that-you-want-to-complime.js --help
+node javascript-file-that-you-want-to-compile.js --help
 ```
 ## Current NodeJS exercises:
 * **Recursive Listing Tree**  
@@ -52,4 +56,4 @@ node javascript-file-that-you-want-to-complime.js --help
     >   [ '3', '2', '1' ] ]
     >```
 
-tbc
+
