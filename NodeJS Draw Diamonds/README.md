@@ -31,5 +31,6 @@ Result
     >Loop for-i to draw them Horizontally  
     >Loop for-j to draw them Vertically  
 * Used 'process.stdout.write()' instead of 'console.log()':  
-    >'console.log(something)' = 'process.stdout.write(something + "\n")' so that we can write '*' without the newline being created.  
-    >Beware that using process.stdout.write() will disrupt the 'for' loops and completely diffrent from using str += 'somwthing'.Check it yourself.
+    >'console.log(something)' = 'process.stdout.write(something + "\n")' so that we can write '*' without the NewLine being created.  
+    >Beware that using process.stdout.write() will disrupt the 'for' loops and completely diffrent from using str += 'somwthing'.Check it yourself.  
+* Used if-else conditions to correctly draw the diamonds.True conditions draw '*' while False conditions draw ' '.
