@@ -55,5 +55,27 @@ node javascript-file-that-you-want-to-compile.js --help
     >   [ '3', '1', '2' ],
     >   [ '3', '2', '1' ] ]
     >```
-
-
+* **Drawing Diamonds**  
+    > File: drawDiamond.js  
+    > Usage:  
+    >```
+    >node drawDiamond.js DrawMe *your-idea-number-of-diamonds* *your-idea-height-of-diamond*
+    >```
+    > Example:
+    >```
+    >node drawDiamond.js DrawMe 5 13
+    >```
+    > Result:  
+    >      *           *           *           *           *      
+    >     * *         * *         * *         * *         * *     
+    >    *   *       *   *       *   *       *   *       *   *    
+    >   *     *     *     *     *     *     *     *     *     *   
+    >  *       *   *       *   *       *   *       *   *       *  
+    > *         * *         * *         * *         * *         * 
+    >*           *           *           *           *           *
+    > *         * *         * *         * *         * *         * 
+    >  *       *   *       *   *       *   *       *   *       *  
+    >   *     *     *     *     *     *     *     *     *     *   
+    >    *   *       *   *       *   *       *   *       *   *    
+    >     * *         * *         * *         * *         * *     
+    >      *           *           *           *           *      
