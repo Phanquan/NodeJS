@@ -1,59 +1,35 @@
-# NodeJS
-## What are those things ?
-NodeJS files using Caporal for help generation, colored output, verbosity control, custom logger, coercion and casting, typos suggestions, and auto-complete for bash/zsh/fish,etc...
-
-## Help
-Type this
+# NodeJS  
+## Caporal  
+Using Caporal to get the input number to draw diamonds.  
+## Help  
+Type this to get informations:  
 ```
 node javascript-file-that-you-want-to-compile.js --help
 ```
-## Current NodeJS exercises:
-* **Recursive Listing Tree**  
-    > File: RecursiveListingTree.js  
-    > Usage:  
-    >```
-    >node RecursiveListingTree.js ListMe *your-path-here*
-    >```  
-    > Result:
-    >```
-    >*your-path-here* : /Users/bluevn/Desktop/abc
-    >├── .DS_Store
-    >├── a-2.js
-    >├── a.html
-    >└── folder-1
-    >   ├── .DS_Store
-    >   ├── folder-2-a
-    >   |   ├── .DS_Store
-    >   |   ├── a.html
-    >   |   └── b.html
-    >   ├── folder-2-b
-    >   |   ├── .DS_Store
-    >   |   ├── b.css
-    >   |   ├── b.html
-    >   |   └── b.js
-    >   └── folder-2-c
-    >       └── folder-2-c-a
-    >           └── c.html
-    >```
-    
-* **Permutation Array**  
-    > File: PermutationArray.js    
-    > Usage:  
-    >```
-    >node PermutationArray.js Permute --p *your-array-that-was-joinned-by-','*
-    >```  
-    > Example:  
-    >```
-    >node PermutationArray.js Permute --p 1,2,3
-    >```
-    > Result:  
-    >```
-    > [ [ '1', '2', '3' ],
-    >   [ '1', '3', '2' ],
-    >   [ '2', '1', '3' ],
-    >   [ '2', '3', '1' ],
-    >   [ '3', '1', '2' ],
-    >   [ '3', '2', '1' ] ]
-    >```
+Type this to run the program:  
+```
+node drawDiamond.js DrawMe *your-input-number-of-diamonds-to-draw* *your-input-height-of-those-diamonds*
+```
+Example:  
+```
+node drawDiamond.js DrawMe 6 7
+```
+Result  
+```
+   *     *     *     *     *     *   
+  * *   * *   * *   * *   * *   * *  
+ *   * *   * *   * *   * *   * *   * 
+*     *     *     *     *     *     *
+ *   * *   * *   * *   * *   * *   * 
+  * *   * *   * *   * *   * *   * *  
+   *     *     *     *     *     *   
 
+```
 
+## Draw Diamonds
+* The Program contains 2 loops that draw the diamonds:
+    >Loop for-i to draw them Horizontally  
+    >Loop for-j to draw them Vertically  
+* Used 'process.stdout.write()' instead of 'console.log()':  
+    >'console.log(something)' = 'process.stdout.write(something + "\n")' so that we can write '*' without the newline being created.  
+    >Beware that using process.stdout.write() will disrupt the loops 'for' and completely diffrent from using str += 'somwthing'.Check it yourself.
