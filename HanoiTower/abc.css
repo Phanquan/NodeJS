@@ -1,0 +1,14 @@
+.tower{
+    height:750px;
+    width:200px;
+    background-color:teal;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container{
+    display:flex;
+    justify-content: space-around;
+}
