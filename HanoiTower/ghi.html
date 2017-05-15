@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!--include D3.js -->
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<!--jquery-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<style type="text/css">
+	div{
+		padding:50px;
+	}
+</style>
+</head>
+<body>
+	<div>
+<button id="pause">Pause</button>
+<button id="resume">Go</button>
+</div>
+</body>
+<script type="text/javascript">
+	function Cell(x,y,life,horiz,vert) { //Cell class
+		this.x = x;
+		this.y = y;
+		this.side = 50;
+		this.life = life;
+		this.id = ""+ x + y;
+		this.maxx = (horiz * this.side) -this.side; 
+		this.maxy = (vert * this.side) - this.side;
+	} //Cell class
+
+	function GameBoard(horiz, vert) { //GameBoard Class
+		this.cellarray = [];
+		//create a new cell and add it to the array
+		for(var i = 0; i < vert; i++) {
+			for(var j = 0; j < horiz; j++) {
+				if((i+j)%2==0) 
+					var life = 0;
+				else life = 1;
+				var current = new Cell(j*50,i*50,life, horiz, vert);
+				this.cellarray.push(current);
+			}
+			console.dir(this.cellarray);
+		}
+
+		this.findneighbors = function(x,y) {
+			var resultarray = [];
+			for (var i = x-this.cellarray[0].side; i <=x+this.cellarray[0].side; i+=this.cellarray[0].side) {
+				for (var j = (y-this.cellarray[0].side); j <= y+this.cellarray[0].side; j+=this.cellarray[0].side) {
+					if(i >=0 && i <= this.cellarray[0].maxx&& j>=0 && j <=this.cellarray[0].maxy && !(i == x && j == y))
+						resultarray.push(""+i+j);
+					}
+				}
+			return resultarray;
+			}//findneighbors
+
+		for(var i = 0; i < this.cellarray.length; i++) {
+			this.cellarray[i].neighbors = this.findneighbors(this.cellarray[i].x, this.cellarray[i].y);
+		}
+
+	//	console.dir(this.cellarray);
+
+		this.iterateThruRules = function() {
+		// Any live cell with fewer than two live neighbours dies, as if caused by under-population.
+		//Any live cell with two or three live neighbours lives on to the next generation. - no addl logic needed for this 
+		//Any live cell with more than three live neighbours dies, as if by overcrowding.
+		//Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+			var deadcells = [];
+			var newlife = [];
+			for (var i = 0; i < this.cellarray.length; i++) { //for each cell	
+				var count = 0;
+				for (var j = 0; j < this.cellarray[i].neighbors.length; j++) { //for each of its neighbors
+					var id = this.cellarray[i].neighbors[j]; // grab the neigbor's id
+					for (var k = 0; k < this.cellarray.length; k++) {
+						if(this.cellarray[k].id == id) { //then find the cell that matches the id
+							if(this.cellarray[k].life) // is it alive? if yes, then great, increment the count.
+								count++;
+								break;							//either way, break out of the for(k) loop
+							}
+						}//for(k)
+				} //for(j)
+				if(this.cellarray[i].life && (count < 2 || count > 3)) //Death! Make a note. 
+					deadcells.push(i);
+				else if (!this.cellarray[i].life && count == 3)	//Birth! Make a note.
+					newlife.push(i);
+			} // for(i) 	
+			for (var m = 0; m < deadcells.length; m++) { //NOW we update the cells. Killing them off...
+				this.cellarray[deadcells[m]].life = 0;
+			}
+			for (var n = 0; n < newlife.length; n++) { //...and giving birth.
+				this.cellarray[newlife[n]].life = 1;
+			}
+		return this;
+		}//rules
+
+			//draws the initial board
+		this.drawboard = function() {
+			//draws the box where SVG objects will go - this is D3 syntax
+			var svgbox = d3.select('body')
+				.selectAll('svg');
+				svgbox.remove();
+			var newbox = d3.select('body')
+				.append('svg')
+				.attr('width', 50*horiz)
+				.attr('height', 50*vert)
+				.style('border', '1px solid black');
+			
+			newbox.selectAll('rect') 
+				.data(this.cellarray)
+				.enter()
+				.append('rect')
+				.attr('x', function(d)
+					{return d.x;})
+				.attr('y',function(d)
+					{return d.y;})
+				.attr('width', function(d) {return d.side;})
+				.attr('height',function(d) {return d.side;})
+				.style('fill',function(d){
+					if (d.life) 
+						return "green";
+					else
+				 	return "white";
+			});
+		}
+		this.drawboard();	
+		
+		this.togglelife = function(cellid) {
+			for (var i = 0; i < this.cellarray.length; i++) {
+				if (this.cellarray[i].id == cellid) {
+					console.log('starting value', this.cellarray[i].life);
+					if (this.cellarray[i].life ==0)
+						this.cellarray[i].life =1;
+					else
+						this.cellarray[i].life=0;
+					console.log('ending value', this.cellarray[i].life);
+					break;
+				}
+			}
+		}
+	}//gameboard class
+
+	//initialize board at a given size
+	var prompt1 = parseInt(prompt("How long should the board be?"));
+	var prompt2 = parseInt(prompt("How tall should the board be?"));
+	if (typeof prompt1 ==="number" && typeof prompt2 ==="number")
+		var cells = new GameBoard(prompt1,prompt2);
+	else {
+		alert ("I needed numbers. I'm gonna give you a 7x7.");
+		var cells = new GameBoard(7,7);
+
+	}
+
+
+	alert("Press GO to start the Game. Click on a cell at any time to change its value.");
+	var update = function(celldata) {
+		celldata.iterateThruRules();
+		d3.select('body').select('svg').selectAll('rect')
+			.data(celldata.cellarray)
+			.style("fill", function(d){
+				if (d.life) 
+					return "green";
+				else
+			 		return "white";
+			})			
+		};
+	var go;
+	document.getElementById("pause").onclick = function() {
+		clearInterval(go);
+	};
+	document.getElementById("resume").onclick = function() {
+		go = setInterval(update,1000,cells);
+	};
+	$(document).on('click', 'rect',function(e){ //clicked on a rectangle
+		//get ID of rectangle
+		var cellid = ""+Math.floor(e.pageX /50.5)*50+Math.floor((e.pageY -130)/50)*50;
+		//send to a function that toggles the life
+		cells.togglelife(cellid);
+		//updates the grid
+		cells.drawboard();
+	});
+</script>
+<script>
+	
+</script>
+</html>
