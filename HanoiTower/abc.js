@@ -1,6 +1,7 @@
 class Disk {
 
-	constructor(diameter) {
+	constructor(nameDisks, diameter, x, y) {
+		this.nameDisks = nameDisks
 		this.diameter = diameter
 	}
 
@@ -8,7 +9,6 @@ class Disk {
 		return this.diameter
 	}
 }
-
 
 class Tower {
 	constructor(nameTowers, arrDisk) {
@@ -26,52 +26,41 @@ class Tower {
 
 }
 
-
 class GameEngine {
 	constructor() {
 		this.data = []
 		this.count = 0
 	}
 
-	takeDisk(a, c) {
-
-	}
-
 	move(n, a, b, c) {
 		if (n > 0) {
 			this.move(n - 1, a, c, b)
-			console.log(`Move disk ${n} from ${a.name} to ${c.name}`)
-			console.log(a.arrDisk)
-			console.log(b.arrDisk)
-			console.log(c.arrDisk)
-			let x = a.arrDisk.pop()
-			c.arrDisk.push(x)
-			console.log(a.arrDisk)
-			console.log(b.arrDisk)
-			console.log(c.arrDisk)
-			console.log()
-
-			this.count++
-				this.move(n - 1, b, a, c)
+			console.log(`Move disk ${n} from ${a} to ${c}`)
+			this.data.push([diskArrInTower[n - 1].nameDisks, a, c])
+			this.count++;
+			this.move(n - 1, b, a, c)
 		}
+		return this.data
 	}
 }
 
 
 
 let diskArr = [
-	// new Disk(4),
-	new Disk(3),
-	new Disk(2),
-	new Disk(1)
+	new Disk('disk1', 1),
+	new Disk('disk2', 2),
+	new Disk('disk3', 3),
+	new Disk('disk4', 4),
+	// new Disk('disk3', 5),
+	// new Disk('disk4', 6)
 ]
 
 let diskArrInTower = diskArr
 
 let towerArr = [
-	new Tower('towerA', diskArrInTower),
-	new Tower('towerB', []),
-	new Tower('towerC', [])
+	new Tower('towerA', diskArrInTower).tower(),
+	new Tower('towerB', []).tower(),
+	new Tower('towerC', []).tower()
 ]
 let game = new GameEngine()
 
@@ -80,7 +69,7 @@ let w = $('.container').width()
 let h = $('.container').height()
 let biggest_d = w / 4;
 let m = biggest_d + biggest_d / 2;
-let unit = biggest_d / towerArr.length
+let unitPerFloor = biggest_d / diskArr.length
 let towerHeight = towerArr.length * 40
 
 
@@ -95,7 +84,7 @@ function drawTowerAndDisk() {
 
 	for (var j = 1; j <= towerArr.length; j++) {
 		svg.append('rect')
-			.attr('x', j * m + (biggest_d / 2) - 10)
+			.attr('x', (j - 1) * m + biggest_d / 2 - 5)
 			.attr('y', 40)
 			.attr('width', 10)
 			.attr('height', (diskArr.length + 1) * 40)
@@ -105,20 +94,38 @@ function drawTowerAndDisk() {
 
 	for (var j = 1; j <= diskArr.length; j++) {
 		svg.append('rect')
-			.attr('x', (diskArr.length - j) * (unit / 2))
+			.attr('x', (diskArr.length - j) * (unitPerFloor / 2))
 			.attr('y', (j + 1) * 40)
-			.attr('width', j * unit)
+			.attr('width', j * unitPerFloor)
 			.attr('height', 40)
-			.attr('class', 'disks')
+			.attr('class', 'color disk' + j)
 	}
 
-	d3.selectAll(".disks").style("fill", function() {
-		return "hsl(" + Math.random() * 360 + ",100%,50%)";
+	d3.selectAll('.color').style('fill', function() {
+		return `hsl( ${Math.random() * 360}  ,100%,50%)`;
 	});
 }
 
 drawTowerAndDisk()
 
 
-// game.move(diskArrInTower.length, towerArr[0], towerArr[1], towerArr[2])
-// console.log(`${game.count} moves`)
+
+let data = game.move(diskArrInTower.length, towerArr[0].name, towerArr[1].name, towerArr[2].name)
+console.log(`${game.count} moves`)
+
+console.log(data)
+
+for (var i = 0; i < data.length; i++) {
+
+}
+
+
+d3.selectAll('.disk1')
+	.transition()
+	.delay(2000)
+	.duration(1000)
+	.attr('y', 0)
+	.transition()
+	.attr('x', 600)
+	.transition()
+	.attr('y', 200)
