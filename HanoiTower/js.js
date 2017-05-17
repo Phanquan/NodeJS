@@ -10,25 +10,24 @@ class Tower {
 		this.name = nameTowers
 		this.arrDisk = arrDisk
 	}
-	tower() {
-		return {
-			name: this.name,
-			arrDisk: this.arrDisk
-		}
-	}
+
 }
 
 class GameEngine {
 	constructor() {
 		this.data = []
 		this.count = 0
+		this.steps = {}
 	}
 	move(n, a, b, c) {
 		if (n > 0) {
 			this.move(n - 1, a, c, b)
 			console.log(`Move disk ${n} from ${a.name} to ${c.name}`)
 				//push the disk and fromTower,toTower objects into the data.
-			this.data.push([diskArr[n - 1], a, c])
+				this.steps.diskToPick = diskArr[n - 1]
+				this.steps.fromTower = a
+				this.steps.toTower = c
+			this.data.push(this.steps)
 			this.count++;
 			this.move(n - 1, b, a, c)
 		}
@@ -37,7 +36,7 @@ class GameEngine {
 }
 
 //function to draw the disks
-let drawTowerAndDisk = () => {
+const drawTowerAndDiskAndAnimation = () => {
 	//the p of object d3 svg
 	let p = {
 		svgWidth: 1200,
@@ -74,9 +73,7 @@ let drawTowerAndDisk = () => {
 	d3.selectAll('.color').style('fill', function() {
 		return `hsl( ${Math.random() * 360}  ,100%,50%)`
 	});
-}
 
-let animation = () => {
 	//get the distance between towers
 	let get_distance = (dis1, dis2) => {
 		switch (true) {
@@ -99,26 +96,19 @@ let animation = () => {
 
 	//animate the disks
 	for (var i = 0; i < data.length; i++) {
-		// x = distence between the fromTower and the toTower
-		let x = get_distance(data[i][1].name, data[i][2].name)
-
-		let begin_x = data[i][0].x_ //get the x_ of object disk (data[i][0])
-
-		let begin_y = data[i][0].y_ //get the y_ of object disk (data[i][0])
-
-		let count_disk = data[i][2].arrDisk.length // get the number of disks in the toTower (data[i][2])
-
+		let x = get_distance(data[i].fromTower.name, data[i].toTower.name) // x = distence between the fromTower and the toTower
+		let begin_x = data[i].diskToPick.x_ //get the x_ of object disk (data[i][0])
+		let begin_y = data[i].diskToPick.y_ //get the y_ of object disk (data[i][0])
+		let countDisks = data[i].toTower.arrDisk.length // get the number of disks in the toTower (data[i][2])
 		let new_x = begin_x + x //set the new x_ (destination) for the disk
-
-		let new_y = n * p.diskHeight - (count_disk * p.diskHeight) - begin_y //set the new y_ for the disk
-
-		let height = -data[i][0].height //set the direction to move the disk,minus for up,plus for down
+		let new_y = n * p.diskHeight - (countDisks * p.diskHeight) - begin_y //set the new y_ for the disk
+		let height = -data[i].diskToPick.height //set the direction to move the disk,minus for up,plus for down
 
 		//update the current disks on each towers
-		update_disk(data[i][0], data[i][1], data[i][2])
+		update_disk(data[i].diskToPick, data[i].fromTower, data[i].toTower)
 
 		//the actual animation
-		d3.selectAll('.' + data[i][0].name)
+		d3.selectAll('.' + data[i].diskToPick.name)
 			.transition()
 			.delay(i * p.animationDelay)
 			.duration(p.animationDuration)
@@ -129,37 +119,30 @@ let animation = () => {
 			.attr('transform', 'translate(' + new_x + ',' + new_y + ')')
 
 		//update the x ordinate of the disks after being moved
-		data[i][0].x_ += x
+		data[i].diskToPick.x_ += x
 	}
 }
 
-let main = () => {
-	//create the array of disks with the n disks
-	const n = 5
-	let diskArr = []
-	for (var i = 1; i <= n; i++) {
-		diskArr.push(new Disk('disk' + i, i))
-	}
 
-	//create the array of towers
-	let towerArr = [
-		new Tower('towerA', diskArr).tower(),
-		new Tower('towerB', []).tower(),
-		new Tower('towerC', []).tower()
-	]
-
-	//main event
-	let game = new GameEngine()
-	let data = game.move(n, towerArr[0], towerArr[1], towerArr[2])
-	console.log(`${game.count} moves`)
-	console.log(data)
-
-	//draw the disks
-	drawTowerAndDisk()
-
-	//run the animation
-	animation()
+//create the array of disks with the n disks
+const n = 4
+let diskArr = []
+for (var i = 1; i <= n; i++) {
+	diskArr.push(new Disk('disk' + i, i))
 }
 
+//create the array of towers
+let towerArr = [
+	new Tower('towerA', diskArr),
+	new Tower('towerB', []),
+	new Tower('towerC', [])
+]
 
-main()
+//main event
+let game = new GameEngine()
+let data = game.move(n, towerArr[0], towerArr[1], towerArr[2])
+console.log(`${game.count} moves`)
+console.log(data)
+
+//draw the disks
+drawTowerAndDiskAndAnimation()
