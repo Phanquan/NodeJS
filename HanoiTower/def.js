@@ -24,8 +24,7 @@ class Tower {
 		this.arrDisk = arrDisk
 	}
 	drawTower(svgInput, attrX1, attrY1, attrX2, attrY2) {
-		svgInput
-			.insert('line', ':first-child')
+		svgInput.insert('line', ':first-child')
 			.attr('x1', attrX1)
 			.attr('y1', attrY1)
 			.attr('x2', attrX2)

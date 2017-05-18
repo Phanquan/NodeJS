@@ -5,7 +5,7 @@ class Disk {
 
 		//set the co-ordinate (x,y) and the height for the object disks
 	}
-	drawDisk(svgInput, attrX, attrY, attrWidth, attrHeight, attrClass, x_, y_, height) {
+	draw(svgInput, attrX, attrY, attrWidth, attrHeight, attrClass, x_, y_, height) {
 		svgInput.append('rect')
 			.attr('x', attrX)
 			.attr('y', attrY)
@@ -23,7 +23,7 @@ class Tower {
 		this.name = nameTowers
 		this.arrDisk = arrDisk
 	}
-	drawTower(svgInput, attrX1, attrY1, attrX2, attrY2) {
+	draw(svgInput, attrX1, attrY1, attrX2, attrY2) {
 		svgInput
 			.insert('line', ':first-child')
 			.attr('x1', attrX1)
@@ -87,7 +87,7 @@ for (var j = 1; j <= n; j++) {
 	diskArr.push(new Disk('disk' + j, j))
 
 	//draw the disk that was just defined
-	diskArr[j - 1].drawDisk(
+	diskArr[j - 1].draw(
 		svg, //svg argument
 		(n - j) * p.diskHeight / 2 + p.diskHeight * 2, //.attr('x',
 		j * p.diskHeight + 2 * p.diskHeight, //attr('y',
@@ -113,7 +113,7 @@ for (var j = 1; j <= m; j++) {
 	}
 
 	//draw those towers
-	towerArr[j - 1].drawTower(
+	towerArr[j - 1].draw(
 		svg, //svg argument
 		p.towerBuffer + (n * p.diskHeight) / 2, //attr x1
 		120, //attr x2
