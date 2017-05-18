@@ -1,7 +1,13 @@
 class Disk {
-	constructor(nameDisks, diameter) {
+	constructor(nameDisks, d, x, y, h) {
 		this.name = nameDisks
-		this.diameter = diameter
+		this.diameter = d
+		this.x_ = x
+		this.y_ = y
+		this.height = h
+	}
+	draw(){
+		
 	}
 }
 
@@ -10,26 +16,30 @@ class Tower {
 		this.name = nameTowers
 		this.arrDisk = arrDisk
 	}
-
+	draw(){
+		
+	}
 }
 
 class GameEngine {
 	constructor() {
 		this.data = []
 		this.count = 0
-		this.steps = {}
+		this.step = {}
 	}
 	move(n, a, b, c) {
 		if (n > 0) {
 			this.move(n - 1, a, c, b)
-			console.log(`Move disk ${n} from ${a.name} to ${c.name}`)
-				//push the disk and fromTower,toTower objects into the data.
-			this.steps = {
+			console.log(`Move disk ${n} from ${a.name} to ${c.name}`);
+
+			//push the the step object with disk,fromTower,toTower properties into the data.
+			this.step = {
 				diskToPick: diskArr[n - 1],
 				fromTower: a,
 				toTower: c
 			}
-			this.data.push(this.steps)
+			this.data.push(this.step)
+
 			this.count++;
 			this.move(n - 1, b, a, c)
 		}
@@ -59,7 +69,7 @@ console.log(data)
 
 
 //the p of object d3 svg
-let p = {
+const p = {
 	svgWidth: 1200,
 	svgHieght: 400,
 	diskHeight: 50,
@@ -70,7 +80,7 @@ let p = {
 }
 
 // draw the parent svg
-let svg = d3.select('.container')
+const svg = d3.select('.container')
 	.append('svg')
 	.attr('width', p.svgWidth)
 	.attr('height', p.svgHieght)
