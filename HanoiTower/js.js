@@ -40,7 +40,7 @@ class Tower {
 class GameEngine {
 	constructor() {
 		this.count = 0 //to count the moves
-		this.data = [] //main data
+		this.data = [] //main data,the data  includes all the steps needed to complete the game
 		this.step = {} //steps which describe the movement of the disks
 	}
 
@@ -59,7 +59,6 @@ class GameEngine {
 			this.count++; //cout the count
 			this.move(n - 1, b, a, c)
 		}
-		return this.data //the data returned includes all the steps needed to complete the game
 	}
 
 	//get the distance between towers
@@ -132,83 +131,91 @@ const svg = d3.select('.container')
 	.attr('width', p.svgWidth)
 	.attr('height', p.svgHieght)
 
-//create the array of disks with the n disks
+
+//create the number of disks with the n disks
 let n = 0;
-let diskArr = []
 
-//create the array of towers and it's length
+//create the number of towers 
 const m = 3
+let diskArr = []
 let towerArr = []
+	//button onclick event to draw
+$('#drawIt').on('click', function() {
 
 
+	try {
+		d3.selectAll("svg > *").remove();
+		n = parseInt($('.inputN').val()) //re-overdrive n
 
-//button onclick event to draw
-let draw = () => {
-	d3.selectAll("svg > *").remove();
-	n = $('.inputN').val()
-	if (0 < n && n < 8 && m === 3) {
+		//reset diskArr and towerArr to prevent mass-clicking the draw button.
+		diskArr = []
+		towerArr = []
 
-		//draw the disks
-		for (var j = 1; j <= n; j++) {
-			//define a new Disk
-			diskArr.push(new Disk('disk' + j, j))
+		//
+		if (0 < n && n < 8 && m === 3) {
 
-			//draw the disk that was just defined
-			diskArr[j - 1].drawDisk(
-				svg, //svg argument
-				(n - j) * p.diskHeight / 2 + p.diskHeight * 2, //.attr('x',
-				j * p.diskHeight + 2 * p.diskHeight, //attr('y',
-				j * p.diskHeight, //.attr('width',
-				p.diskHeight, //.attr('height',
-				'color disk' + j, //.attr('class',
-				0, //diskArr[j - 1].x_
-				j * p.diskHeight, //diskArr[j - 1].y_
-				j * p.diskHeight + p.diskHeight //diskArr[j - 1].height 
-			)
-		}
+			//draw the disks
+			for (var j = 1; j <= n; j++) {
+				//define a new Disk
+				diskArr.push(new Disk('disk' + j, j))
 
-		//draw the towers
-		for (var j = 1; j <= m; j++) {
-			//define new 3 towers
-			if (j - 1 === 0) {
-				towerArr.push(new Tower('tower' + j, diskArr)) // push the array of disks into the first tower
-			} else {
-				towerArr.push(new Tower('tower' + j, [])) //the rest towers dont have any disks 
+				//draw the disk that was just defined
+				diskArr[j - 1].drawDisk(
+					svg, //svg argument
+					(n - j) * p.diskHeight / 2 + p.diskHeight * 2, //.attr('x',
+					j * p.diskHeight + 2 * p.diskHeight, //attr('y',
+					j * p.diskHeight, //.attr('width',
+					p.diskHeight, //.attr('height',
+					'color disk' + j, //.attr('class',
+					0, //diskArr[j - 1].x_
+					j * p.diskHeight, //diskArr[j - 1].y_
+					j * p.diskHeight + p.diskHeight //diskArr[j - 1].height 
+				)
 			}
 
-			//draw those towers
-			towerArr[j - 1].drawTower(
-				svg, //svg argument
-				p.towerBuffer + (n * p.diskHeight) / 2, //attr x1
-				120, //attr x2
-				p.towerBuffer + (n * p.diskHeight) / 2, //attr y1
-				n * p.diskHeight + 150 //attr y2
-			)
-			p.towerBuffer += 400 //increase the bufferzone between towers
+			//draw the towers
+			for (var j = 1; j <= m; j++) {
+				//define new 3 towers
+				if (j - 1 === 0) {
+					towerArr.push(new Tower('tower' + j, diskArr)) // push the array of disks into the first tower
+				} else {
+					towerArr.push(new Tower('tower' + j, [])) //the rest towers dont have any disks 
+				}
+
+				//draw those towers
+				towerArr[j - 1].drawTower(
+					svg, //svg argument
+					p.towerBuffer + (n * p.diskHeight) / 2, //attr x1
+					120, //attr x2
+					p.towerBuffer + (n * p.diskHeight) / 2, //attr y1
+					n * p.diskHeight + 150 //attr y2
+				)
+				p.towerBuffer += 400 //increase the bufferzone between towers
+			}
+			p.towerBuffer = 100
+				//set random colors for the disks
+			d3.selectAll('.color').style('fill', function() {
+				return `hsl( ${Math.random() * 360}  ,100%,50%)`
+			});
+		} else {
+			alert('there should be about 1 to 7 disks')
 		}
-		p.towerBuffer = 100
-		//set random colors for the disks
-		d3.selectAll('.color').style('fill', function() {
-			return `hsl( ${Math.random() * 360}  ,100%,50%)`
-		});
-	} else {
-		alert('there should be about 1 to 7 disks')
+	} catch (e) {
+		console.error(e.message)
 	}
-}
+})
 
 
-//button onlick event to move
-let startIt = () => {
+//button onlick event to animate the disk
+$('#startIt').on('click', function() {
 	try {
-		//main event
-		let game = new GameEngine()
-		let data = game.move(n, towerArr[0], towerArr[1], towerArr[2])
+		let game = new GameEngine() //define new gameEngine
+		game.move(n, towerArr[0], towerArr[1], towerArr[2]) //run the hanoi tower algorithm
 		console.log(`${game.count} moves`)
-		console.log(data)
+		console.log(game.data)
 			// start animation
 		game.animateDisk(n, p.diskHeight, p.animationDelay, p.animationDuration)
 	} catch (e) {
-		alert('Hey,Draw first!!', e.message)
+		console.error(e.message)
 	}
-
-}
+})
