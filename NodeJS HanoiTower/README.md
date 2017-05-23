@@ -42,24 +42,6 @@ let svg = d3.select(".container")
 	> - Rồi chia tiếp mỗi phần đó làm đôi theo chiều dọc,tức là width/8  
 	> - Ta sẽ thấy từ hình dưới,ta tạo được 3 đĩa có bán kính bằng nhau và cách nhau 1 khoảng bằng w/8 và mỗi đĩa có bán kính bằng w/4,khoảng margin(m) giữa các đĩa bằng w/8
 
-```javascript
-				       SVG
-	0 ------------------------------------------------------------ >X
-	|	T1	|	⃓      T2	⃓	|	T3	|
-	|	⃓	|	⃓	|	⃓	|	⃓	|
-	|	⃓	|	⃓	|	⃓	|	⃓	|
-	|	⃓	|	⃓	|	⃓	|	⃓	|
-	|	⃓	|	⃓	|	⃓	|	⃓	|
-	| _____________	|	⃓ _____________	⃓	| _____________	|
-	|(______d______)|   m	*(______d______)⃓   m	|(______d______)|
-	|	⃓	|	⃓	|	⃓	|	⃓	|
-	v
-	Y
-			---w/8---		---w/8---		
-	-------w/4------- 	-------w/4------- 	-------w/4-------
-	------------------------------width------------------------------
-
-```
 ![Phân chia khoảng cách](Capture.png)
 
 	> - Ta định nghĩa các thuộc tính của đĩa và cọc:
