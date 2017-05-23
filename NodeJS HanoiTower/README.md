@@ -60,6 +60,8 @@ let svg = d3.select(".container")
 	------------------------------width------------------------------
 
 ```
+![Phân chia khoảng cách](Capture.png)
+
 	> - Ta định nghĩa các thuộc tính của đĩa và cọc:
 ```javascript
 	//đĩa ở cuối sẽ có bán kính lớn nhất nên ta đặt nó bằng w/4 (d)
